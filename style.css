@@ -1,0 +1,1396 @@
+/* =========================================================
+   BONECO DO ABISMO
+   STYLE.CSS
+   Interface vertical 9:16
+   Otimizado para celular / Galaxy M23
+========================================================= */
+
+/* =========================================================
+   RESET
+========================================================= */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    -webkit-tap-highlight-color: transparent;
+}
+
+html,
+body {
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    background: #030303;
+    font-family: Arial, Helvetica, sans-serif;
+    color: #ffffff;
+}
+
+button {
+    font-family: inherit;
+    border: 0;
+    outline: none;
+    cursor: pointer;
+    touch-action: manipulation;
+}
+
+
+/* =========================================================
+   APP
+========================================================= */
+
+#app {
+    position: relative;
+
+    width: 100%;
+    height: 100dvh;
+
+    min-height: 100vh;
+
+    overflow: hidden;
+
+    background:
+        radial-gradient(
+            circle at 50% 45%,
+            #171717 0%,
+            #090909 38%,
+            #020202 78%,
+            #000000 100%
+        );
+}
+
+
+/* =========================================================
+   TELA PRINCIPAL
+========================================================= */
+
+#liveScreen {
+    position: relative;
+
+    width: 100%;
+    height: 100%;
+
+    overflow: hidden;
+}
+
+
+/* =========================================================
+   BARRA SUPERIOR
+========================================================= */
+
+.top-bar {
+    position: absolute;
+
+    top: 0;
+    left: 0;
+
+    width: 100%;
+
+    height: 58px;
+
+    padding:
+        env(safe-area-inset-top)
+        14px
+        0
+        14px;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: space-between;
+
+    z-index: 20;
+
+    background:
+        linear-gradient(
+            to bottom,
+            rgba(0, 0, 0, 0.88),
+            rgba(0, 0, 0, 0)
+        );
+}
+
+
+.brand {
+    font-size: clamp(11px, 3.1vw, 15px);
+
+    font-weight: 900;
+
+    letter-spacing: 1.5px;
+
+    color: #eeeeee;
+
+    text-shadow:
+        0 0 8px rgba(255,255,255,0.15);
+}
+
+
+.live-status {
+    display: flex;
+
+    align-items: center;
+    gap: 7px;
+
+    padding: 6px 10px;
+
+    border-radius: 6px;
+
+    background: rgba(130, 0, 0, 0.65);
+
+    border: 1px solid rgba(255, 50, 50, 0.45);
+
+    font-size: 11px;
+
+    font-weight: 900;
+
+    letter-spacing: 1px;
+}
+
+
+.live-dot {
+    width: 8px;
+    height: 8px;
+
+    border-radius: 50%;
+
+    background: #ff2020;
+
+    box-shadow:
+        0 0 8px #ff2020;
+
+    animation: livePulse 1.2s infinite;
+}
+
+
+@keyframes livePulse {
+
+    0% {
+        opacity: 1;
+        transform: scale(1);
+    }
+
+    50% {
+        opacity: 0.45;
+        transform: scale(0.75);
+    }
+
+    100% {
+        opacity: 1;
+        transform: scale(1);
+    }
+
+}
+
+
+/* =========================================================
+   ÁREA DE STATUS
+========================================================= */
+
+.status-area {
+    position: absolute;
+
+    top: 70px;
+    left: 12px;
+    right: 12px;
+
+    display: grid;
+
+    grid-template-columns: 1fr 1fr;
+
+    gap: 8px;
+
+    z-index: 20;
+}
+
+
+.status-card {
+    padding: 8px 9px;
+
+    background: rgba(10, 10, 10, 0.78);
+
+    border:
+        1px solid
+        rgba(255, 255, 255, 0.08);
+
+    border-radius: 7px;
+
+    backdrop-filter: blur(5px);
+}
+
+
+.status-label {
+    font-size: 9px;
+
+    font-weight: 900;
+
+    letter-spacing: 1.5px;
+
+    color: #999999;
+
+    margin-bottom: 5px;
+}
+
+
+.status-value {
+    margin-top: 4px;
+
+    text-align: center;
+
+    font-size: 11px;
+
+    font-weight: 900;
+
+    color: #eeeeee;
+}
+
+
+/* =========================================================
+   BARRA DE VIDA
+========================================================= */
+
+.health-bar,
+.danger-bar {
+    position: relative;
+
+    width: 100%;
+
+    height: 8px;
+
+    overflow: hidden;
+
+    border-radius: 20px;
+
+    background: #292929;
+}
+
+
+.health-fill {
+    width: 100%;
+    height: 100%;
+
+    background:
+        linear-gradient(
+            90deg,
+            #5d0000,
+            #d30000,
+            #ff3030
+        );
+
+    border-radius: inherit;
+
+    transition:
+        width 0.35s ease;
+}
+
+
+/* =========================================================
+   BARRA DE PERIGO
+========================================================= */
+
+.danger-fill {
+    width: 0%;
+    height: 100%;
+
+    background:
+        linear-gradient(
+            90deg,
+            #5b3500,
+            #ff9800,
+            #ff2600
+        );
+
+    border-radius: inherit;
+
+    transition:
+        width 0.35s ease;
+}
+
+
+/* =========================================================
+   CONTADORES
+========================================================= */
+
+.counters {
+    position: absolute;
+
+    top: 145px;
+    left: 12px;
+    right: 12px;
+
+    display: flex;
+
+    justify-content: center;
+
+    gap: 8px;
+
+    z-index: 20;
+}
+
+
+.counter {
+    min-width: 72px;
+
+    padding: 6px 9px;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    gap: 5px;
+
+    border-radius: 7px;
+
+    background: rgba(8, 8, 8, 0.75);
+
+    border:
+        1px solid
+        rgba(255,255,255,0.07);
+
+    font-size: 11px;
+
+    color: #cccccc;
+}
+
+
+.counter span {
+    font-size: 12px;
+}
+
+
+.counter strong {
+    color: #ffffff;
+
+    font-size: 11px;
+}
+
+
+/* =========================================================
+   ÁREA DO PERSONAGEM
+========================================================= */
+
+#characterArea {
+    position: absolute;
+
+    top: 180px;
+    bottom: 145px;
+
+    left: 0;
+    right: 0;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    overflow: hidden;
+
+    z-index: 5;
+}
+
+
+/* =========================================================
+   AURA DO BONECO
+========================================================= */
+
+#characterArea::before {
+    content: "";
+
+    position: absolute;
+
+    width: min(70vw, 290px);
+    height: min(70vw, 290px);
+
+    border-radius: 50%;
+
+    background:
+        radial-gradient(
+            circle,
+            rgba(100, 0, 0, 0.30) 0%,
+            rgba(70, 0, 0, 0.12) 40%,
+            rgba(0, 0, 0, 0) 72%
+        );
+
+    filter: blur(12px);
+
+    animation: auraPulse 3s infinite ease-in-out;
+}
+
+
+@keyframes auraPulse {
+
+    0%,
+    100% {
+        transform: scale(0.95);
+        opacity: 0.55;
+    }
+
+    50% {
+        transform: scale(1.08);
+        opacity: 0.95;
+    }
+
+}
+
+
+/* =========================================================
+   PERSONAGEM
+========================================================= */
+
+.character {
+    position: relative;
+
+    width: 150px;
+    height: 270px;
+
+    z-index: 10;
+
+    transform-origin: center bottom;
+
+    filter:
+        drop-shadow(
+            0 20px 25px
+            rgba(0,0,0,0.8)
+        );
+
+    animation:
+        characterIdle 3s
+        ease-in-out
+        infinite;
+}
+
+
+@keyframes characterIdle {
+
+    0%,
+    100% {
+        transform: translateY(0) rotate(0deg);
+    }
+
+    50% {
+        transform: translateY(-4px) rotate(0.5deg);
+    }
+
+}
+
+
+/* =========================================================
+   CABEÇA
+========================================================= */
+
+.head {
+    position: absolute;
+
+    top: 5px;
+    left: 35px;
+
+    width: 80px;
+    height: 88px;
+
+    border-radius:
+        48%
+        48%
+        43%
+        43%;
+
+    background:
+        radial-gradient(
+            circle at 50% 35%,
+            #464646 0%,
+            #242424 55%,
+            #111111 100%
+        );
+
+    border:
+        3px solid
+        #090909;
+
+    box-shadow:
+        inset
+        0 0 18px
+        rgba(0,0,0,0.9),
+
+        0 0 20px
+        rgba(0,0,0,0.8);
+}
+
+
+/* =========================================================
+   OLHOS
+========================================================= */
+
+.eye {
+    position: absolute;
+
+    top: 34px;
+
+    width: 14px;
+    height: 8px;
+
+    border-radius: 50%;
+
+    background: #ff2929;
+
+    box-shadow:
+        0 0 7px #ff0000,
+
+        inset
+        0 -2px 3px
+        rgba(0,0,0,0.8);
+
+    animation:
+        eyePulse 2.5s
+        infinite;
+}
+
+
+.eye.left {
+    left: 18px;
+}
+
+
+.eye.right {
+    right: 18px;
+}
+
+
+@keyframes eyePulse {
+
+    0%,
+    100% {
+        opacity: 0.75;
+    }
+
+    50% {
+        opacity: 1;
+    }
+
+}
+
+
+/* =========================================================
+   BOCA
+========================================================= */
+
+.mouth {
+    position: absolute;
+
+    left: 50%;
+
+    bottom: 20px;
+
+    transform: translateX(-50%);
+
+    width: 38px;
+    height: 12px;
+
+    border-radius: 0 0 50% 50%;
+
+    background: #050505;
+
+    border-bottom:
+        2px solid
+        #050505;
+}
+
+
+/* =========================================================
+   PESCOÇO
+========================================================= */
+
+.neck {
+    position: absolute;
+
+    top: 82px;
+    left: 61px;
+
+    width: 28px;
+    height: 24px;
+
+    background: #161616;
+
+    z-index: -1;
+}
+
+
+/* =========================================================
+   CORPO
+========================================================= */
+
+.body {
+    position: absolute;
+
+    top: 98px;
+    left: 35px;
+
+    width: 80px;
+    height: 105px;
+
+    border-radius:
+        30px
+        30px
+        12px
+        12px;
+
+    background:
+        linear-gradient(
+            90deg,
+            #0c0c0c,
+            #252525,
+            #0b0b0b
+        );
+
+    border:
+        3px solid
+        #080808;
+
+    box-shadow:
+        inset
+        0 0 15px
+        rgba(0,0,0,0.8);
+}
+
+
+/* =========================================================
+   BRAÇOS
+========================================================= */
+
+.arm {
+    position: absolute;
+
+    top: 5px;
+
+    width: 18px;
+    height: 100px;
+
+    border-radius: 15px;
+
+    background:
+        linear-gradient(
+            90deg,
+            #0b0b0b,
+            #292929,
+            #0a0a0a
+        );
+}
+
+
+.arm.left {
+    left: -19px;
+
+    transform:
+        rotate(9deg);
+}
+
+
+.arm.right {
+    right: -19px;
+
+    transform:
+        rotate(-9deg);
+}
+
+
+/* =========================================================
+   MÃOS
+========================================================= */
+
+.hand {
+    position: absolute;
+
+    top: 91px;
+
+    width: 22px;
+    height: 22px;
+
+    border-radius: 50%;
+
+    background: #111111;
+}
+
+
+.hand.left {
+    left: -22px;
+}
+
+
+.hand.right {
+    right: -22px;
+}
+
+
+/* =========================================================
+   PERNAS
+========================================================= */
+
+.leg {
+    position: absolute;
+
+    top: 192px;
+
+    width: 25px;
+    height: 75px;
+
+    border-radius: 12px;
+
+    background:
+        linear-gradient(
+            90deg,
+            #080808,
+            #222222,
+            #080808
+        );
+}
+
+
+.leg.left {
+    left: 45px;
+
+    transform: rotate(2deg);
+}
+
+
+.leg.right {
+    right: 45px;
+
+    transform: rotate(-2deg);
+}
+
+
+/* =========================================================
+   EVENTOS / PARTÍCULAS
+========================================================= */
+
+#particles {
+    position: absolute;
+
+    inset: 0;
+
+    pointer-events: none;
+
+    overflow: hidden;
+
+    z-index: 15;
+}
+
+
+.particle {
+    position: absolute;
+
+    width: 7px;
+    height: 7px;
+
+    border-radius: 50%;
+
+    background: #ff3030;
+
+    box-shadow:
+        0 0 8px #ff0000;
+
+    pointer-events: none;
+
+    animation:
+        particleFly
+        0.8s
+        ease-out
+        forwards;
+}
+
+
+@keyframes particleFly {
+
+    from {
+        transform:
+            translate(0, 0)
+            scale(1);
+
+        opacity: 1;
+    }
+
+    to {
+        transform:
+            translate(
+                var(--x),
+                var(--y)
+            )
+            scale(0);
+
+        opacity: 0;
+    }
+
+}
+
+
+/* =========================================================
+   MENSAGEM DO EVENTO
+========================================================= */
+
+#eventMessage {
+    position: absolute;
+
+    left: 15px;
+    right: 15px;
+
+    bottom: 105px;
+
+    min-height: 38px;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    padding: 8px 12px;
+
+    text-align: center;
+
+    border-radius: 8px;
+
+    background:
+        rgba(0,0,0,0.72);
+
+    border:
+        1px solid
+        rgba(255,255,255,0.08);
+
+    font-size: 12px;
+
+    font-weight: 800;
+
+    letter-spacing: 0.3px;
+
+    color: #eeeeee;
+
+    z-index: 25;
+
+    transition:
+        transform 0.2s ease,
+        opacity 0.2s ease;
+}
+
+
+/* =========================================================
+   ÚLTIMO PRESENTE
+========================================================= */
+
+.last-gift {
+    position: absolute;
+
+    left: 50%;
+
+    bottom: 68px;
+
+    transform: translateX(-50%);
+
+    width: calc(100% - 30px);
+
+    text-align: center;
+
+    font-size: 9px;
+
+    color: #888888;
+
+    white-space: nowrap;
+
+    overflow: hidden;
+
+    text-overflow: ellipsis;
+
+    z-index: 20;
+}
+
+
+/* =========================================================
+   BOTÃO CONTROLE
+========================================================= */
+
+.control-button {
+    position: absolute;
+
+    right: 12px;
+    bottom: 14px;
+
+    min-height: 40px;
+
+    padding: 0 13px;
+
+    border-radius: 8px;
+
+    background:
+        rgba(20,20,20,0.88);
+
+    border:
+        1px solid
+        rgba(255,255,255,0.13);
+
+    color: #ffffff;
+
+    font-size: 10px;
+
+    font-weight: 900;
+
+    letter-spacing: 0.7px;
+
+    z-index: 50;
+
+    box-shadow:
+        0 5px 20px
+        rgba(0,0,0,0.5);
+}
+
+
+.control-button:active {
+    transform: scale(0.95);
+}
+
+
+/* =========================================================
+   PAINEL DE CONTROLE
+========================================================= */
+
+.control-panel {
+    position: absolute;
+
+    top: 0;
+    right: 0;
+
+    width: min(92vw, 390px);
+
+    height: 100%;
+
+    padding:
+        max(16px, env(safe-area-inset-top))
+        14px
+        max(16px, env(safe-area-inset-bottom))
+        14px;
+
+    overflow-y: auto;
+
+    background:
+        rgba(8,8,8,0.98);
+
+    border-left:
+        1px solid
+        rgba(255,255,255,0.08);
+
+    box-shadow:
+        -15px 0 40px
+        rgba(0,0,0,0.7);
+
+    z-index: 100;
+
+    transform:
+        translateX(0);
+
+    transition:
+        transform 0.25s ease;
+}
+
+
+.control-panel.hidden {
+    transform:
+        translateX(105%);
+
+    pointer-events: none;
+}
+
+
+/* =========================================================
+   CABEÇALHO DO CONTROLE
+========================================================= */
+
+.control-header {
+    display: flex;
+
+    align-items: center;
+    justify-content: space-between;
+
+    margin-bottom: 20px;
+
+    padding-bottom: 12px;
+
+    border-bottom:
+        1px solid
+        rgba(255,255,255,0.08);
+}
+
+
+.control-header h2 {
+    font-size: 18px;
+
+    letter-spacing: 1px;
+}
+
+
+.control-header small {
+    display: block;
+
+    margin-top: 3px;
+
+    color: #777777;
+
+    font-size: 10px;
+}
+
+
+.close-button {
+    width: 38px;
+    height: 38px;
+
+    border-radius: 8px;
+
+    background: #181818;
+
+    color: #ffffff;
+
+    font-size: 16px;
+}
+
+
+.close-button:active {
+    transform: scale(0.92);
+}
+
+
+/* =========================================================
+   SEÇÕES
+========================================================= */
+
+.control-section {
+    margin-bottom: 19px;
+}
+
+
+.control-section h3 {
+    margin-bottom: 9px;
+
+    font-size: 11px;
+
+    color: #aaaaaa;
+
+    letter-spacing: 1px;
+}
+
+
+/* =========================================================
+   GRADE DE BOTÕES
+========================================================= */
+
+.button-grid {
+    display: grid;
+
+    grid-template-columns:
+        repeat(2, minmax(0, 1fr));
+
+    gap: 7px;
+}
+
+
+.button-grid button {
+    min-height: 43px;
+
+    padding: 7px;
+
+    border-radius: 8px;
+
+    background:
+        linear-gradient(
+            180deg,
+            #242424,
+            #151515
+        );
+
+    border:
+        1px solid
+        rgba(255,255,255,0.08);
+
+    color: #eeeeee;
+
+    font-size: 11px;
+
+    font-weight: 800;
+
+    transition:
+        transform 0.1s ease,
+        background 0.15s ease;
+}
+
+
+.button-grid button:active {
+    transform: scale(0.95);
+
+    background: #303030;
+}
+
+
+.danger-button {
+    border-color:
+        rgba(255, 50, 50, 0.3) !important;
+
+    color: #ff7070 !important;
+}
+
+
+/* =========================================================
+   CAIXA DE CONEXÃO
+========================================================= */
+
+.connection-box {
+    margin-top: 8px;
+
+    padding: 12px;
+
+    border-radius: 9px;
+
+    background:
+        rgba(255,255,255,0.025);
+
+    border:
+        1px solid
+        rgba(255,255,255,0.07);
+}
+
+
+.connection-title {
+    margin-bottom: 7px;
+
+    font-size: 9px;
+
+    color: #777777;
+
+    letter-spacing: 1px;
+}
+
+
+.connection-status {
+    font-size: 11px;
+
+    font-weight: 900;
+
+    margin-bottom: 5px;
+}
+
+
+.connection-status.offline {
+    color: #aaaaaa;
+}
+
+
+.connection-status.online {
+    color: #53ff73;
+}
+
+
+.connection-box small {
+    color: #666666;
+
+    font-size: 9px;
+
+    line-height: 1.4;
+}
+
+
+/* =========================================================
+   ANIMAÇÕES DE EVENTO
+========================================================= */
+
+.character.hit {
+    animation:
+        characterHit
+        0.35s
+        ease;
+}
+
+
+@keyframes characterHit {
+
+    0% {
+        transform: translateX(0);
+    }
+
+    20% {
+        transform: translateX(-9px) rotate(-3deg);
+    }
+
+    40% {
+        transform: translateX(9px) rotate(3deg);
+    }
+
+    60% {
+        transform: translateX(-6px) rotate(-2deg);
+    }
+
+    80% {
+        transform: translateX(5px) rotate(2deg);
+    }
+
+    100% {
+        transform: translateX(0);
+    }
+
+}
+
+
+.character.heal {
+    animation:
+        characterHeal
+        0.7s
+        ease;
+}
+
+
+@keyframes characterHeal {
+
+    0% {
+        transform: scale(1);
+    }
+
+    50% {
+        transform: scale(1.08);
+    }
+
+    100% {
+        transform: scale(1);
+    }
+
+}
+
+
+.character.danger {
+    animation:
+        characterDanger
+        0.8s
+        ease;
+}
+
+
+@keyframes characterDanger {
+
+    0% {
+        transform: scale(1);
+    }
+
+    25% {
+        transform:
+            scale(1.04)
+            rotate(-2deg);
+    }
+
+    50% {
+        transform:
+            scale(1.08)
+            rotate(2deg);
+    }
+
+    75% {
+        transform:
+            scale(1.04)
+            rotate(-2deg);
+    }
+
+    100% {
+        transform: scale(1);
+    }
+
+}
+
+
+/* =========================================================
+   EVENTO 1000 CURTIDAS
+========================================================= */
+
+.super-event {
+    animation:
+        superEvent
+        1s
+        ease;
+}
+
+
+@keyframes superEvent {
+
+    0% {
+        transform: scale(1);
+        filter:
+            brightness(1);
+    }
+
+    25% {
+        transform: scale(1.12);
+
+        filter:
+            brightness(1.7);
+    }
+
+    50% {
+        transform: scale(0.94);
+
+        filter:
+            brightness(2);
+    }
+
+    75% {
+        transform: scale(1.08);
+
+        filter:
+            brightness(1.5);
+    }
+
+    100% {
+        transform: scale(1);
+
+        filter:
+            brightness(1);
+    }
+
+}
+
+
+/* =========================================================
+   RESPONSIVIDADE
+========================================================= */
+
+@media (max-width: 360px) {
+
+    .status-area {
+        top: 64px;
+    }
+
+    .counters {
+        top: 137px;
+    }
+
+    #characterArea {
+        top: 170px;
+    }
+
+    .character {
+        transform: scale(0.88);
+    }
+
+    .button-grid button {
+        min-height: 40px;
+
+        font-size: 10px;
+    }
+
+}
+
+
+@media (min-height: 800px) {
+
+    #characterArea {
+        bottom: 160px;
+    }
+
+}
+
+
+@media (min-width: 600px) {
+
+    #liveScreen {
+        max-width: 430px;
+
+        margin: 0 auto;
+    }
+
+}
