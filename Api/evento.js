@@ -1,727 +1,304 @@
-"use strict";
+// ============================================================
+// BONECO DO ABISMO
+// API DE EVENTOS
+// Arquivo: api/evento.js
+// ============================================================
 
-/*
-=========================================================
- BONECO DO ABISMO
- API DE EVENTOS
- /api/evento
+let eventos = [];
 
- Função:
- Receber eventos externos e disponibilizá-los
- para a aplicação.
+const MAX_EVENTOS = 50;
+const MAX_BODY_SIZE = 10000;
 
- IMPORTANTE:
- Este endpoint NÃO captura o TikTok sozinho.
- Ele é a porta de entrada para a futura ponte
- de eventos da Live.
-=========================================================
-*/
+// ------------------------------------------------------------
+// CABEÇALHOS
+// ------------------------------------------------------------
 
-
-/* ========================================================
-   CONFIGURAÇÕES
-======================================================== */
-
-const MAX_BODY_SIZE = 10 * 1024;
-
-const ALLOWED_METHODS = [
-    "GET",
-    "POST",
-    "OPTIONS"
-];
-
-const ALLOWED_EVENTS = [
-    "FOLLOW",
-    "FOLLOWER",
-    "NEW_FOLLOWER",
-
-    "LIKE",
-    "LIKE_100",
-    "LIKES_100",
-    "100_LIKES",
-
-    "LIKE_1000",
-    "LIKES_1000",
-    "1000_LIKES",
-    "S1000",
-    "S-1000",
-
-    "ROSE",
-    "ROSA",
-
-    "GIFT",
-    "PRESENT",
-    "PRESENTE",
-
-    "PRIORITY",
-    "PRIORITARIO",
-    "PRIORITÁRIOS",
-
-    "COMMENT",
-    "COMMENTS",
-
-    "SHARE",
-    "SHARES",
-
-    "DAMAGE",
-    "DANO",
-
-    "HEAL",
-    "CURA",
-
-    "DANGER",
-    "PERIGO",
-
-    "VIEWER",
-    "VIEWERS",
-    "VIEW"
-];
-
-
-/* ========================================================
-   RESPOSTA JSON
-======================================================== */
-
-function sendJson(res, status, data) {
-
-    res.status(status);
-
-    res.setHeader(
-        "Content-Type",
-        "application/json; charset=utf-8"
-    );
-
-    res.setHeader(
-        "Cache-Control",
-        "no-store"
-    );
-
-    res.setHeader(
-        "Access-Control-Allow-Origin",
-        "*"
-    );
-
-    res.setHeader(
-        "Access-Control-Allow-Methods",
-        "GET, POST, OPTIONS"
-    );
-
-    res.setHeader(
-        "Access-Control-Allow-Headers",
-        "Content-Type, Authorization, X-API-Key"
-    );
-
-    res.json(data);
-
+function headers() {
+    return {
+        "Access-Control-Allow-Origin": "*",
+        "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
+        "Access-Control-Allow-Headers": "Content-Type",
+        "Cache-Control": "no-store, no-cache, must-revalidate"
+    };
 }
 
+// ------------------------------------------------------------
+// GERAR ID
+// ------------------------------------------------------------
 
-/* ========================================================
-   LIMPAR TEXTO
-======================================================== */
+function gerarId() {
+    return (
+        Date.now().toString(36) +
+        "-" +
+        Math.random().toString(36).substring(2, 8)
+    );
+}
 
-function cleanText(value, maxLength = 120) {
+// ------------------------------------------------------------
+// NORMALIZAR EVENTO
+// ------------------------------------------------------------
 
-    if (
-        value === undefined ||
-        value === null
-    ) {
-        return "";
+function normalizarEvento(body) {
+
+    let tipo = String(
+        body.type ||
+        body.event ||
+        ""
+    ).toUpperCase();
+
+    // Compatibilidade com nomes antigos
+    if (tipo === "LIKE") {
+        const quantidade = Number(body.amount || body.count || 1);
+
+        if (quantidade >= 1000) {
+            tipo = "LIKE_1000";
+        } else {
+            tipo = "LIKE_100";
+        }
     }
 
-    return String(value)
-        .replace(/[\u0000-\u001F\u007F]/g, "")
-        .trim()
-        .slice(0, maxLength);
-
-}
-
-
-/* ========================================================
-   NÚMERO SEGURO
-======================================================== */
-
-function safeNumber(value, fallback = 1) {
-
-    const number = Number(value);
-
-    if (
-        !Number.isFinite(number)
-    ) {
-        return fallback;
+    if (tipo === "S1000" || tipo === "S-1000") {
+        tipo = "LIKE_1000";
     }
 
-    return number;
+    return {
+        eventId: gerarId(),
 
-}
+        type: tipo,
 
-
-/* ========================================================
-   NORMALIZAR TIPO
-======================================================== */
-
-function normalizeType(value) {
-
-    return cleanText(
-        value,
-        40
-    )
-        .toUpperCase();
-
-}
-
-
-/* ========================================================
-   NORMALIZAR EVENTO
-======================================================== */
-
-function normalizeEvent(body) {
-
-    const type =
-        normalizeType(
-            body.type ||
-            body.event ||
-            body.action
-        );
-
-
-    const username =
-        cleanText(
+        username: String(
             body.username ||
+            body.uniqueId ||
             body.user ||
-            body.nickname ||
-            "Visitante",
-            80
-        );
+            "Anônimo"
+        ).substring(0, 100),
 
-
-    const giftName =
-        cleanText(
+        giftName: String(
             body.giftName ||
             body.gift ||
-            body.gift_name ||
-            "Presente",
-            80
-        );
+            ""
+        ).substring(0, 100),
 
-
-    const message =
-        cleanText(
+        message: String(
             body.message ||
-            body.comment ||
-            "",
-            300
-        );
+            ""
+        ).substring(0, 500),
 
-
-    const amount =
-        safeNumber(
-            body.amount ??
-            body.value ??
-            1,
+        amount: Number(
+            body.amount ||
+            body.count ||
             1
-        );
-
-
-    return {
-
-        type,
-
-        username,
-
-        giftName,
-
-        message,
-
-        amount,
+        ),
 
         timestamp: Date.now()
-
     };
-
 }
 
+// ------------------------------------------------------------
+// TIPOS PERMITIDOS
+// ------------------------------------------------------------
 
-/* ========================================================
-   VALIDAR EVENTO
-======================================================== */
+const EVENTOS_PERMITIDOS = [
+    "FOLLOW",
+    "LIKE_100",
+    "LIKE_1000",
+    "ROSE",
+    "GIFT",
+    "PRIORITY",
+    "DAMAGE",
+    "HEAL",
+    "DANGER",
+    "VIEWER"
+];
 
-function validateEvent(event) {
+// ------------------------------------------------------------
+// HANDLER
+// ------------------------------------------------------------
 
-    if (
-        !event.type
-    ) {
+export default async function handler(req, res) {
 
-        return {
-            valid: false,
-            error: "O campo 'type' é obrigatório."
-        };
+    // Cabeçalhos
+    const h = headers();
 
+    Object.keys(h).forEach((key) => {
+        res.setHeader(key, h[key]);
+    });
+
+    // --------------------------------------------------------
+    // OPTIONS
+    // --------------------------------------------------------
+
+    if (req.method === "OPTIONS") {
+        return res.status(200).end();
     }
 
+    // --------------------------------------------------------
+    // GET
+    // --------------------------------------------------------
 
-    if (
-        !ALLOWED_EVENTS.includes(
-            event.type
-        )
-    ) {
+    if (req.method === "GET") {
 
-        return {
-            valid: false,
-            error:
-                `Evento não permitido: ${event.type}`
-        };
+        // Pega o ID do último evento que o cliente recebeu
+        const since = req.query?.since || "";
 
-    }
+        let novosEventos = eventos;
 
+        if (since) {
 
-    if (
-        !Number.isFinite(
-            event.amount
-        )
-    ) {
+            const indice = eventos.findIndex(
+                evento => evento.eventId === since
+            );
 
-        return {
-            valid: false,
-            error: "O campo 'amount' precisa ser numérico."
-        };
-
-    }
-
-
-    /*
-       Evita valores absurdos enviados
-       acidentalmente pela ponte.
-    */
-
-    event.amount =
-        Math.max(
-            0,
-            Math.min(
-                1000000,
-                event.amount
-            )
-        );
-
-
-    return {
-        valid: true
-    };
-
-}
-
-
-/* ========================================================
-   CONVERTER EVENTO
-======================================================== */
-
-function convertEvent(event) {
-
-    /*
-       LIKE normal
-       pode chegar da ponte como:
-
-       {
-           type: "LIKE",
-           amount: 100
-       }
-
-       Aqui transformamos em LIKE_100
-       ou LIKE_1000 quando aplicável.
-    */
-
-    if (
-        event.type === "LIKE"
-    ) {
-
-        if (
-            event.amount >= 1000
-        ) {
-
-            event.type =
-                "LIKE_1000";
-
-        } else if (
-            event.amount >= 100
-        ) {
-
-            event.type =
-                "LIKE_100";
-
+            if (indice >= 0) {
+                novosEventos = eventos.slice(indice + 1);
+            }
         }
 
+        return res.status(200).json({
+
+            ok: true,
+
+            online: true,
+
+            count: novosEventos.length,
+
+            events: novosEventos,
+
+            acceptedEvents: EVENTOS_PERMITIDOS
+
+        });
     }
 
+    // --------------------------------------------------------
+    // POST
+    // --------------------------------------------------------
 
-    /*
-       Comentários e compartilhamentos
-       ficam disponíveis para a próxima
-       etapa do motor do jogo.
-    */
-
-    if (
-        event.type === "COMMENTS"
-    ) {
-
-        event.type =
-            "COMMENT";
-
-    }
-
-
-    if (
-        event.type === "SHARES"
-    ) {
-
-        event.type =
-            "SHARE";
-
-    }
-
-
-    return event;
-
-}
-
-
-/* ========================================================
-   GERAR ID DO EVENTO
-======================================================== */
-
-function generateEventId() {
-
-    return (
-
-        Date.now().toString(36) +
-
-        "-" +
-
-        Math.random()
-            .toString(36)
-            .slice(2, 10)
-
-    );
-
-}
-
-
-/* ========================================================
-   HANDLER PRINCIPAL
-======================================================== */
-
-export default function handler(req, res) {
-
-    /*
-       CORS
-    */
-
-    res.setHeader(
-        "Access-Control-Allow-Origin",
-        "*"
-    );
-
-    res.setHeader(
-        "Access-Control-Allow-Methods",
-        "GET, POST, OPTIONS"
-    );
-
-    res.setHeader(
-        "Access-Control-Allow-Headers",
-        "Content-Type, Authorization, X-API-Key"
-    );
-
-
-    /* ====================================================
-       OPTIONS
-    ==================================================== */
-
-    if (
-        req.method === "OPTIONS"
-    ) {
-
-        return sendJson(
-            res,
-            204,
-            {}
-        );
-
-    }
-
-
-    /* ====================================================
-       MÉTODO
-    ==================================================== */
-
-    if (
-        !ALLOWED_METHODS.includes(
-            req.method
-        )
-    ) {
-
-        return sendJson(
-            res,
-            405,
-            {
-                ok: false,
-
-                error:
-                    "Método HTTP não permitido."
-            }
-        );
-
-    }
-
-
-    /* ====================================================
-       GET — TESTE DA API
-    ==================================================== */
-
-    if (
-        req.method === "GET"
-    ) {
-
-        return sendJson(
-            res,
-            200,
-            {
-
-                ok: true,
-
-                service:
-                    "Boneco do Abismo",
-
-                endpoint:
-                    "/api/evento",
-
-                status:
-                    "online",
-
-                accepts:
-                    ALLOWED_EVENTS,
-
-                usage: {
-
-                    method:
-                        "POST",
-
-                    contentType:
-                        "application/json",
-
-                    example: {
-
-                        type:
-                            "LIKE_1000",
-
-                        username:
-                            "Teste",
-
-                        amount:
-                            1000
-
-                    }
-
-                },
-
-                timestamp:
-                    Date.now()
-
-            }
-        );
-
-    }
-
-
-    /* ====================================================
-       POST
-    ==================================================== */
-
-    if (
-        req.method === "POST"
-    ) {
+    if (req.method === "POST") {
 
         try {
 
-            /*
-               Tamanho aproximado do body.
-            */
+            let body = req.body;
 
-            const rawBody =
-                JSON.stringify(
-                    req.body || {}
-                );
+            // Caso Vercel entregue body como string
+            if (typeof body === "string") {
 
-
-            if (
-                rawBody.length >
-                MAX_BODY_SIZE
-            ) {
-
-                return sendJson(
-                    res,
-                    413,
-                    {
-
+                if (body.length > MAX_BODY_SIZE) {
+                    return res.status(413).json({
                         ok: false,
-
-                        error:
-                            "Evento muito grande."
-
-                    }
-                );
-
-            }
-
-
-            /*
-               Verifica se o body existe.
-            */
-
-            if (
-                !req.body ||
-                typeof req.body !== "object"
-            ) {
-
-                return sendJson(
-                    res,
-                    400,
-                    {
-
-                        ok: false,
-
-                        error:
-                            "O corpo da requisição precisa ser JSON."
-
-                    }
-                );
-
-            }
-
-
-            /*
-               Normaliza.
-            */
-
-            let event =
-                normalizeEvent(
-                    req.body
-                );
-
-
-            /*
-               Valida.
-            */
-
-            const validation =
-                validateEvent(
-                    event
-                );
-
-
-            if (
-                !validation.valid
-            ) {
-
-                return sendJson(
-                    res,
-                    400,
-                    {
-
-                        ok: false,
-
-                        error:
-                            validation.error
-
-                    }
-                );
-
-            }
-
-
-            /*
-               Converte aliases.
-            */
-
-            event =
-                convertEvent(
-                    event
-                );
-
-
-            /*
-               ID único.
-            */
-
-            const eventId =
-                generateEventId();
-
-
-            /*
-               Resultado.
-            */
-
-            return sendJson(
-                res,
-                200,
-                {
-
-                    ok: true,
-
-                    accepted: true,
-
-                    eventId,
-
-                    event,
-
-                    next:
-                        "Evento aceito pela API.",
-
-                    timestamp:
-                        Date.now()
-
+                        error: "Payload muito grande."
+                    });
                 }
-            );
 
-        } catch (error) {
+                body = JSON.parse(body);
+            }
 
-            console.error(
-                "Erro na API:",
-                error
-            );
+            if (!body || typeof body !== "object") {
 
+                return res.status(400).json({
+                    ok: false,
+                    error: "JSON inválido."
+                });
+            }
 
-            return sendJson(
-                res,
-                500,
-                {
+            const evento =
+                normalizarEvento(body);
+
+            // ------------------------------------------------
+            // VALIDAR EVENTO
+            // ------------------------------------------------
+
+            if (
+                !EVENTOS_PERMITIDOS.includes(
+                    evento.type
+                )
+            ) {
+
+                return res.status(400).json({
 
                     ok: false,
 
                     error:
-                        "Erro interno ao processar o evento."
+                        "Tipo de evento não permitido.",
 
-                }
+                    received:
+                        evento.type,
+
+                    acceptedEvents:
+                        EVENTOS_PERMITIDOS
+                });
+            }
+
+            // ------------------------------------------------
+            // ADICIONAR À FILA
+            // ------------------------------------------------
+
+            eventos.push(evento);
+
+            // Limita tamanho da fila
+            if (eventos.length > MAX_EVENTOS) {
+                eventos =
+                    eventos.slice(-MAX_EVENTOS);
+            }
+
+            console.log(
+                "[Boneco API] Novo evento:",
+                evento
             );
 
-        }
+            // ------------------------------------------------
+            // RESPOSTA
+            // ------------------------------------------------
 
+            return res.status(200).json({
+
+                ok: true,
+
+                accepted: true,
+
+                eventId:
+                    evento.eventId,
+
+                event:
+                    evento,
+
+                queueSize:
+                    eventos.length
+
+            });
+
+        } catch (erro) {
+
+            console.error(
+                "[Boneco API] Erro:",
+                erro
+            );
+
+            return res.status(400).json({
+
+                ok: false,
+
+                error:
+                    "Não foi possível processar o evento."
+
+            });
+        }
     }
 
+    // --------------------------------------------------------
+    // MÉTODO NÃO PERMITIDO
+    // --------------------------------------------------------
 
-    /*
-       Fallback.
-    */
-
-    return sendJson(
-        res,
-        400,
-        {
-
-            ok: false,
-
-            error:
-                "Requisição inválida."
-
-        }
+    res.setHeader(
+        "Allow",
+        "GET, POST, OPTIONS"
     );
 
+    return res.status(405).json({
+
+        ok: false,
+
+        error:
+            "Método não permitido."
+
+    });
 }
