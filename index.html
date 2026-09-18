@@ -1,1 +1,414 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
 
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
+    >
+
+    <meta name="theme-color" content="#050505">
+
+    <title>Boneco do Abismo</title>
+
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <main id="app">
+
+        <!-- =========================
+             ÁREA DA LIVE
+        ========================== -->
+
+        <section id="liveScreen">
+
+            <div class="top-bar">
+
+                <div class="brand">
+                    BONECO DO ABISMO
+                </div>
+
+                <div class="live-status">
+                    <span class="live-dot"></span>
+                    LIVE
+                </div>
+
+            </div>
+
+
+            <!-- STATUS -->
+
+            <div class="status-area">
+
+                <div class="status-card">
+
+                    <div class="status-label">
+                        VIDA
+                    </div>
+
+                    <div class="health-bar">
+                        <div
+                            id="healthFill"
+                            class="health-fill"
+                        ></div>
+                    </div>
+
+                    <div
+                        id="healthText"
+                        class="status-value"
+                    >
+                        1000 / 1000
+                    </div>
+
+                </div>
+
+
+                <div class="status-card">
+
+                    <div class="status-label">
+                        PERIGO
+                    </div>
+
+                    <div class="danger-bar">
+                        <div
+                            id="dangerFill"
+                            class="danger-fill"
+                        ></div>
+                    </div>
+
+                    <div
+                        id="dangerText"
+                        class="status-value"
+                    >
+                        0%
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- CONTADORES -->
+
+            <div class="counters">
+
+                <div class="counter">
+                    <span>👥</span>
+                    <strong id="viewerCount">0</strong>
+                </div>
+
+                <div class="counter">
+                    <span>❤️</span>
+                    <strong id="likeCount">0</strong>
+                </div>
+
+                <div class="counter">
+                    <span>🎁</span>
+                    <strong id="giftCount">0</strong>
+                </div>
+
+            </div>
+
+
+            <!-- BONECO -->
+
+            <section id="characterArea">
+
+                <div id="particles"></div>
+
+                <div
+                    id="character"
+                    class="character"
+                >
+
+                    <div class="head">
+
+                        <div class="eye left"></div>
+                        <div class="eye right"></div>
+
+                        <div class="mouth"></div>
+
+                    </div>
+
+                    <div class="neck"></div>
+
+                    <div class="body">
+
+                        <div class="arm left"></div>
+                        <div class="arm right"></div>
+
+                        <div class="hand left"></div>
+                        <div class="hand right"></div>
+
+                    </div>
+
+                    <div class="leg left"></div>
+                    <div class="leg right"></div>
+
+                </div>
+
+            </section>
+
+
+            <!-- EVENTO ATUAL -->
+
+            <div id="eventMessage">
+
+                Aguardando evento...
+
+            </div>
+
+
+            <!-- ÚLTIMO PRESENTE -->
+
+            <div
+                id="lastGift"
+                class="last-gift"
+            >
+                Nenhum presente recebido
+            </div>
+
+
+            <!-- BOTÃO DO CONTROLE -->
+
+            <button
+                id="openControl"
+                class="control-button"
+                type="button"
+            >
+                ⚙️ CONTROLE
+            </button>
+
+        </section>
+
+
+        <!-- =========================
+             PAINEL DE CONTROLE
+        ========================== -->
+
+        <aside
+            id="controlPanel"
+            class="control-panel hidden"
+        >
+
+            <div class="control-header">
+
+                <div>
+                    <h2>CONTROLE</h2>
+                    <small>Boneco do Abismo</small>
+                </div>
+
+                <button
+                    id="closeControl"
+                    type="button"
+                    class="close-button"
+                >
+                    ✕
+                </button>
+
+            </div>
+
+
+            <!-- VIDA -->
+
+            <div class="control-section">
+
+                <h3>❤️ VIDA</h3>
+
+                <div class="button-grid">
+
+                    <button
+                        data-action="damage"
+                        data-value="50"
+                    >
+                        💥 -50
+                    </button>
+
+                    <button
+                        data-action="damage"
+                        data-value="100"
+                    >
+                        💥 -100
+                    </button>
+
+                    <button
+                        data-action="damage"
+                        data-value="250"
+                    >
+                        💥 -250
+                    </button>
+
+                    <button
+                        data-action="heal"
+                        data-value="100"
+                    >
+                        💚 +100
+                    </button>
+
+                </div>
+
+            </div>
+
+
+            <!-- TIKTOK -->
+
+            <div class="control-section">
+
+                <h3>📱 EVENTOS</h3>
+
+                <div class="button-grid">
+
+                    <button
+                        data-action="follow"
+                    >
+                        ➕ Seguir
+                    </button>
+
+                    <button
+                        data-action="likes"
+                        data-value="100"
+                    >
+                        ❤️ +100
+                    </button>
+
+                    <button
+                        data-action="likes"
+                        data-value="1000"
+                    >
+                        🔥 +1000
+                    </button>
+
+                    <button
+                        data-action="rose"
+                    >
+                        🌹 Rosa
+                    </button>
+
+                    <button
+                        data-action="gift"
+                    >
+                        🎁 Presente
+                    </button>
+
+                    <button
+                        data-action="priority"
+                    >
+                        ⚡ Prioritário
+                    </button>
+
+                </div>
+
+            </div>
+
+
+            <!-- PERIGO -->
+
+            <div class="control-section">
+
+                <h3>☠️ PERIGO</h3>
+
+                <div class="button-grid">
+
+                    <button
+                        data-action="danger"
+                        data-value="10"
+                    >
+                        ☠️ +10%
+                    </button>
+
+                    <button
+                        data-action="danger"
+                        data-value="25"
+                    >
+                        ☠️ +25%
+                    </button>
+
+                    <button
+                        data-action="danger"
+                        data-value="50"
+                    >
+                        🔥 +50%
+                    </button>
+
+                    <button
+                        data-action="danger"
+                        data-value="100"
+                    >
+                        💀 100%
+                    </button>
+
+                </div>
+
+            </div>
+
+
+            <!-- CONTROLE GERAL -->
+
+            <div class="control-section">
+
+                <h3>🎛️ SISTEMA</h3>
+
+                <div class="button-grid">
+
+                    <button
+                        data-action="viewer"
+                        data-value="1"
+                    >
+                        👤 +1 Viewer
+                    </button>
+
+                    <button
+                        data-action="viewer"
+                        data-value="10"
+                    >
+                        👥 +10 Viewers
+                    </button>
+
+                    <button
+                        data-action="reset"
+                        class="danger-button"
+                    >
+                        🔄 RESET
+                    </button>
+
+                </div>
+
+            </div>
+
+
+            <!-- STATUS DA CONEXÃO -->
+
+            <div class="connection-box">
+
+                <div class="connection-title">
+                    CONEXÃO
+                </div>
+
+                <div
+                    id="connectionStatus"
+                    class="connection-status offline"
+                >
+                    ● MODO TESTE
+                </div>
+
+                <small>
+                    Eventos reais serão conectados posteriormente.
+                </small>
+
+            </div>
+
+        </aside>
+
+    </main>
+
+
+    <!-- JAVASCRIPT -->
+
+    <script src="eventos.js"></script>
+    <script src="app.js"></script>
+
+</body>
+</html>
